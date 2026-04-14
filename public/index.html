@@ -1,1 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>XSS Test Page</title>
+</head>
+<body>
+
+  <h1>XSS Vulnerable Lab</h1>
+
+  <form method="GET" action="/">
+    <input name="input" placeholder="Enter text" />
+    <button type="submit">Submit</button>
+  </form>
+
+  <hr />
+
+  <h3>Output:</h3>
+
+  <!-- ❌ INTENTIONALLY UNSAFE -->
+  <div>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const userInput = params.get("input");
+
+      // NO SANITIZATION ON PURPOSE
+      document.write(userInput);
+    </script>
+  </div>
+
+</body>
+</html>
 
