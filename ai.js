@@ -8,27 +8,31 @@ const client = new OpenAI({
 });
 
 export async function analyzeInput(input) {
-  const prompt = `
-You are a cybersecurity assistant analyzing potential XSS input.
-
-User input:
-"${input}"
-
-Tasks:
-1. Determine if this looks like an XSS attempt or harmless input
-2. If malicious or suspicious, explain what type of XSS it resembles (reflected, stored, DOM-based)
-3. DO NOT provide exploit instructions
-4. Explain the security risk in simple terms
-5. Provide secure coding fixes (sanitization, CSP, escaping)
-
-Return in structured bullet points.
-`;
-
   const response = await client.chat.completions.create({
     model: "gpt-4o-mini",
-    messages: [{ role: "user", content: prompt }]
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are a cybersecurity assistant that analyzes XSS attacks safely."
+      },
+      {
+        role: "user",
+        content: `
+Analyze this input for XSS risk:
+
+INPUT:
+${input}
+
+Return:
+- Is it malicious or not
+- Type of XSS (if any)
+- What it would affect in a browser
+- How to fix it in code
+`
+      }
+    ]
   });
 
   return response.choices[0].message.content;
 }
-
